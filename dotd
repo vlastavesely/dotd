@@ -1,0 +1,77 @@
+#!/bin/sh
+set -e
+
+version=0.1
+default_file=10-default
+
+fatal() {
+	echo >&2 "fatal: $1"
+	exit 1
+}
+
+install_dir() {
+	if ! file=$(readlink -e "$1"); then
+		fatal "file '$1' does not exist."
+	fi
+
+	test ! -d "$file.d" || return 0
+
+	echo >&2 "Initialising '$file.d' ..."
+	mkdir -p "$file.d"
+	cat "$file" >"$file.d/$default_file"
+}
+
+restore_dir() {
+	if ! file=$(readlink -e "$1"); then
+		fatal "file '$1' does not exist."
+	fi
+
+	test -d "$file.d" || return 0
+
+	echo >&2 "Removing '$file.d' ..."
+	cat "$file.d/$default_file" >"$file"
+	rm -rf "$file.d"
+}
+
+update_dir() {
+	if ! file=$(readlink -e "$1"); then
+		fatal "file '$1' not found."
+	fi
+
+	echo >&2 "Updating '$file' ..."
+	find "$file.d" -type f | sort | xargs -rd'\n' cat >"$file"
+}
+
+if [ "$#" = 0 ]; then
+	cat "$0" | grep '^#/' | cut -c 4-
+	exit 1
+fi
+
+while test $# -gt 0; do
+	case "$1" in
+	-i|--install)
+		install_dir "$2"
+		shift
+		;;
+	-r|--restore)
+		restore_dir "$2"
+		shift
+		;;
+	-u|--update)
+		update_dir "$2"
+		shift
+		;;
+	-h|--help)
+		cat "$0" | grep '^#/' | cut -c 4-
+		exit 1
+		;;
+	-v|--version)
+		echo "dotd $version"
+		exit 0
+		;;
+	*)
+		fatal "unrecognised argument '$1'."
+		;;
+	esac
+	shift
+done
