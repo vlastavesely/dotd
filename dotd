@@ -1,4 +1,19 @@
 #!/bin/sh
+#/ Usage: dotd [options]
+#/
+#/ dotd is a script for simple management of flat config files.
+#/
+#/ OPTIONS:
+#/   -i | --install <FILE>  convert the FILE into a dynamically generated one
+#/   -r | --restore <FILE>  restore the original flat file (drops all changes)
+#/   -u | --update <FILE>   regenerate the given config file from the fragments
+#/   -h | --help            show this message and exit
+#/   -v | --version         show version number and exit
+#/
+#/ Notes:
+#/   The FILE parameter expects the flat file name, not the directory name
+#/   (e.g., '/etc/hosts' instead of '/etc/hosts.d').
+#/
 set -e
 
 version=0.1
