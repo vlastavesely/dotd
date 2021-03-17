@@ -35,6 +35,7 @@ install_dir() {
 	echo >&2 "Initialising '$file.d' ..."
 	mkdir -p "$file.d"
 	cat "$file" >"$file.d/$default_file"
+	chmod -w "$file"
 }
 
 restore_dir() {
@@ -59,7 +60,9 @@ update_dir() {
 	fi
 
 	echo >&2 "Updating '$file' ..."
+	chmod +w "$file"
 	find "$file.d" -type f | sort | xargs -rd'\n' cat >"$file"
+	chmod -w "$file"
 }
 
 test_dir() {
