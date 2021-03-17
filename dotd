@@ -7,6 +7,7 @@
 #/   -i | --install <FILE>  convert the FILE into a dynamically generated one
 #/   -r | --restore <FILE>  restore the original flat file (drops all changes)
 #/   -u | --update <FILE>   regenerate the given config file from the fragments
+#/   -t | --test <FILE>     test whether the FILE is managed by the program
 #/   -h | --help            show this message and exit
 #/   -v | --version         show version number and exit
 #/
@@ -43,7 +44,7 @@ restore_dir() {
 
 	test -d "$file.d" || return 0
 
-	echo >&2 "Removing '$file.d' ..."
+	echo >&2 "Restoring '$file' ..."
 	cat "$file.d/$default_file" >"$file"
 	rm -rf "$file.d"
 }
@@ -53,8 +54,16 @@ update_dir() {
 		fatal "file '$1' not found."
 	fi
 
+	if ! test_dir "$1"; then
+		install_dir "$1"
+	fi
+
 	echo >&2 "Updating '$file' ..."
 	find "$file.d" -type f | sort | xargs -rd'\n' cat >"$file"
+}
+
+test_dir() {
+	test -f "$1.d/$default_file"
 }
 
 if [ "$#" = 0 ]; then
@@ -74,6 +83,10 @@ while test $# -gt 0; do
 		;;
 	-u|--update)
 		update_dir "$2"
+		shift
+		;;
+	-t|--test)
+		test_dir "$2"
 		shift
 		;;
 	-h|--help)
