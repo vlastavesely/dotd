@@ -1,0 +1,90 @@
+.TH "dotd" "1" "16 March 2021" "dotd" "Administration"
+
+.SH NAME
+.B dotd
+- a helper for management of flat configuration files
+
+
+.SH SYNOPSIS
+.B dotd
+.RI [ OPTION "]...
+
+
+.SH DESCRIPTION
+.B dotd
+is a simple administrative utility for dynamic generation of flat configuration
+files from a
+.I *.d
+directory.
+
+Ideally, every configuration would implement inclusion of
+configuration overrides that could be shipped using the package manager or
+manipulated from shell scripts. But since this is not always the case, it is
+sometimes needed to simulate the same behaviour in another way. This program
+does the task: it moves the original configuration file into a
+.I *.d
+directory, alongside other fragment files, and then rewrites the original file
+by the contents of all fragment files concatenated together.
+
+The program does
+.I not
+watch the fragment files for changes so it has to be instructed manually to
+regenerate the configuration.
+
+
+.SH OPTIONS
+.B \-i
+.IR FILE ,
+.B \--install
+.I FILE
+.RS 4
+Convert the
+.I FILE
+into a dynamically generated one.
+.RE
+
+.B \-r
+.IR FILE ,
+.B \--remove
+.I FILE
+.RS 4
+Restore the original flat
+.IR FILE .
+.RE
+
+.B \-u
+.IR FILE ,
+.B \--update
+.I FILE
+.RS 4
+Regenerate the given configuration
+.IR FILE .
+.RE
+
+.B \-t
+.IR FILE ,
+.B \--test
+.I FILE
+.RS 4
+Check whether the
+.I FILE
+is managed by the program.
+.RE
+
+.BR \-h ,
+.B --help
+.RS 4
+Show version number and exit.
+.RE
+
+
+.SH LICENSE AND WARRANTY
+Copyright © 2021  Vlasta Vesely <vlastavesely@protonmail.ch>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License version 2 as published by the
+Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
