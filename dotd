@@ -17,6 +17,7 @@
 #/
 set -e
 
+progname=dotd
 version=0.1
 default_file=10-default
 
@@ -46,6 +47,7 @@ restore_dir() {
 	test -d "$file.d" || return 0
 
 	echo >&2 "Restoring '$file' ..."
+	chmod u+w "$file"
 	cat "$file.d/$default_file" >"$file"
 	rm -rf "$file.d"
 }
@@ -56,11 +58,11 @@ update_dir() {
 	fi
 
 	if ! test_dir "$1"; then
-		install_dir "$1"
+		fatal "file '$1' is not managed by '$progname'."
 	fi
 
 	echo >&2 "Updating '$file' ..."
-	chmod +w "$file"
+	chmod u+w "$file"
 	find "$file.d" -type f | sort | xargs -rd'\n' cat >"$file"
 	chmod -w "$file"
 }
@@ -69,8 +71,12 @@ test_dir() {
 	test -f "$1.d/$default_file"
 }
 
-if [ "$#" = 0 ]; then
+print_usage() {
 	cat "$0" | grep '^#/' | cut -c 4-
+}
+
+if [ "$#" = 0 ]; then
+	print_usage
 	exit 1
 fi
 
@@ -93,11 +99,11 @@ while test $# -gt 0; do
 		shift
 		;;
 	-h|--help)
-		cat "$0" | grep '^#/' | cut -c 4-
+		print_usage
 		exit 1
 		;;
 	-v|--version)
-		echo "dotd $version"
+		echo "$progname $version"
 		exit 0
 		;;
 	*)
