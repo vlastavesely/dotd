@@ -1,0 +1,40 @@
+Management of Flat Configuration Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This project originated from the need to easily and reliably add entries into
+the ‘/etc/hosts’ file from shell scripts.
+
+The principle behind the program is simple: the program copies the original
+file into a ‘*.d’ directory where you can put your own additional configuration
+files. When the files are ready, you can run ‘dotd -u FILE’ command which will
+simply concatenate all the files and overwrite the original file.
+
+There are some similar projects on the Internet that aim to solve the very
+same problem but the aim of this program is to be as simple as possible, without
+any cool features like watching for changes, etc. Honouring the UNIX principles,
+this program attempts to solve the problem as simply and as reliably as
+possible.
+
+
+Example
+-------
+If you want, for example, to add some entries into ‘/etc/hosts’, you need to
+instruct ‘dotd’ to manage the file and then you can to update the file:
+
+  # dotd -t /etc/hosts || dotd -i /etc/hosts
+  # echo "1.1.1.1  hostname" >/etc/hosts.d/20-hostname
+  # dotd -u /etc/hosts
+
+For more details on usage, see the included manual page.
+
+
+Licensing Notice
+----------------
+This software is released under the terms of the GPL license version 2 as
+published by the Free Software Foundation. You can freely redistribute and/or
+modify the software under the terms of the license.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+For more information on details of the license, see the file COPYING.
