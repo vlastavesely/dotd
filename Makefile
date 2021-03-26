@@ -1,10 +1,15 @@
 SHELL  = /bin/sh
 PREFIX = /usr/local
 
+.PHONY: all test install uninstall clean
+
 all: dotd.1.gz
 
 %.1.gz: %.1
 	cat $< | gzip -f >$@
+
+test:
+	sh test
 
 install:
 	mkdir -p $(PREFIX)/bin $(PREFIX)/share/man/man1

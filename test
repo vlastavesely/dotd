@@ -1,0 +1,44 @@
+#!/bin/sh
+set -e
+
+tmpdir=$(mktemp -d /tmp/dotd-test.XXXXXX)
+
+cleanup() {
+	rm -rf "$tmpdir"
+	echo "\033[31mfailure\033[0m"
+	exit 1
+}
+
+trap cleanup 1 2 3 6 9 15
+
+assert_same() {
+	if ! [ "x$1" = "x$2" ]; then
+		echo >&2 "assertion failure: '$1' != '$2'"
+		cleanup
+	fi
+}
+
+echo "Running tests in '$tmpdir' ..."
+
+orig='# This is a flat file
+shell=sh'
+second="user=root"
+
+# Initialise
+echo "$orig" >"$tmpdir/flat"
+sh dotd -i "$tmpdir/flat" 2>/dev/null
+assert_same "$orig" "$(cat "$tmpdir/flat")"
+assert_same "$orig" "$(cat "$tmpdir/flat.d/10-default")"
+
+# Update
+echo "$second" >"$tmpdir/flat.d/20-second"
+sh dotd -u "$tmpdir/flat" 2>/dev/null
+assert_same "$(echo "$orig\n$second")" "$(cat "$tmpdir/flat")"
+
+# Restore
+sh dotd -r "$tmpdir/flat" 2>/dev/null
+assert_same "$orig" "$(cat "$tmpdir/flat")"
+
+rm -rf "$tmpdir"
+
+echo "\033[32mpassed\033[0m"
