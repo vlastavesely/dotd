@@ -33,7 +33,7 @@ install_dir() {
 
 	test ! -d "$file.d" || return 0
 
-	echo >&2 "Initialising '$file.d' ..."
+	echo "Initialising '$file.d' ..."
 	mkdir -p "$file.d"
 	cat "$file" >"$file.d/$default_file"
 	chmod -w "$file"
@@ -46,7 +46,7 @@ restore_dir() {
 
 	test -d "$file.d" || return 0
 
-	echo >&2 "Restoring '$file' ..."
+	echo "Restoring '$file' ..."
 	chmod u+w "$file"
 	cat "$file.d/$default_file" >"$file"
 	rm -rf "$file.d"
@@ -61,7 +61,7 @@ update_dir() {
 		fatal "file '$1' is not managed by '$progname'."
 	fi
 
-	echo >&2 "Updating '$file' ..."
+	echo "Updating '$file' ..."
 	chmod u+w "$file"
 	find "$file.d" -type f | sort | xargs -rd'\n' cat >"$file"
 	chmod -w "$file"
