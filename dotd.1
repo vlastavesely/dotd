@@ -1,4 +1,4 @@
-.TH "dotd" "1" "16 March 2021" "dotd" "Administration"
+.TH "dotd" "1" "04 April 2021" "dotd" "Configuration manager"
 
 .SH NAME
 .B dotd
@@ -7,7 +7,7 @@
 
 .SH SYNOPSIS
 .B dotd
-.RI [ OPTION "]...
+.RI [ OPTION "]... [" FILE "]"
 
 
 .SH DESCRIPTION
@@ -17,11 +17,11 @@ files from a
 .I *.d
 directory.
 
-Ideally, every configuration would implement inclusion of
-configuration overrides that could be shipped using the package manager or
-manipulated from shell scripts. But since this is not always the case, it is
-sometimes needed to simulate the same behaviour in another way. This program
-does the task: it moves the original configuration file into a
+Ideally, every configuration would implement inclusion of configuration
+overrides that could be shipped using a package manager or manipulated from
+shell scripts. But since this is not always the case, it is sometimes needed
+to simulate the same behaviour in another way. This program does the task:
+it moves the original configuration file into a
 .I *.d
 directory, alongside other fragment files, and then rewrites the original file
 by the contents of all fragment files concatenated together.
@@ -45,7 +45,7 @@ into a dynamically generated one.
 
 .B \-r
 .IR FILE ,
-.B \--remove
+.B \--restore
 .I FILE
 .RS 4
 Restore the original flat
@@ -74,8 +74,35 @@ is managed by the program.
 .BR \-h ,
 .B --help
 .RS 4
+Show usage information and exit.
+.RE
+
+.BR \-v ,
+.B --version
+.RS 4
 Show version number and exit.
 .RE
+
+
+.SH EXAMPLE
+Let us say that you want to manage the entries in
+.IR /etc/hosts .
+In such a case, you need to instruct
+.B dotd
+to manage the file and then you can add your own configuration fragments:
+
+    dotd -t /etc/hosts || dotd -i /etc/hosts
+    echo "1.1.1.1  hostname" >/etc/hosts.d/20-hostname
+    dotd -u /etc/hosts
+
+At this point, the file contains the original directives as well as the new one.
+
+
+.SH REPORTING BUGS
+If you encounter a bug, you should make sure that you are using the latest
+version of the software. If you are and the bug is still present, you can
+report it on the GitLab issues tracker:
+.IR https://gitlab.com/vlastavesely/dotd/issues .
 
 
 .SH LICENSE AND WARRANTY
