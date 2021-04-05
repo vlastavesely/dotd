@@ -18,7 +18,7 @@ possible.
 Example
 -------
 If you want, for example, to add some entries into ‘/etc/hosts’, you need to
-instruct ‘dotd’ to manage the file and then you can to update the file:
+instruct ‘dotd’ to manage the file and then you can update the file:
 
   # dotd -t /etc/hosts || dotd -i /etc/hosts
   # echo "1.1.1.1  hostname" >/etc/hosts.d/20-hostname
