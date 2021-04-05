@@ -18,7 +18,7 @@
 set -e
 
 progname=dotd
-version=0.1
+version=1.0
 default_file=10-default
 
 fatal() {
