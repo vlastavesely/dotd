@@ -18,7 +18,7 @@
 set -e
 
 progname=dotd
-version=1.0
+version=1.1
 default_file=10-default
 
 fatal() {
@@ -31,7 +31,7 @@ install_dir() {
 		fatal "file '$1' does not exist."
 	fi
 
-	test ! -d "$file.d" || return 0
+	test_dir "$file" && return 0
 
 	echo "Initialising '$file.d' ..."
 	mkdir -p "$file.d"
@@ -44,7 +44,7 @@ restore_dir() {
 		fatal "file '$1' does not exist."
 	fi
 
-	test -d "$file.d" || return 0
+	test_dir "$file" || return 0
 
 	echo "Restoring '$file' ..."
 	chmod u+w "$file"
@@ -57,9 +57,7 @@ update_dir() {
 		fatal "file '$1' not found."
 	fi
 
-	if ! test_dir "$1"; then
-		fatal "file '$1' is not managed by '$progname'."
-	fi
+	test_dir "$1" || fatal "file '$1' is not managed by '$progname'."
 
 	echo "Updating '$file' ..."
 	chmod u+w "$file"
